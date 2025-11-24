@@ -73,6 +73,11 @@ service-health-check/
 │     └── dashboard.html # Web UI (status table + chart)
 │── static/              # (Optional) JS/CSS
 │── README.md
+|--images
+
+## 📸 Dashboard Screenshot
+
+![Service Health Dashboard](images/dashboard.png)
 
 ⚙️ Technologies Used
 Backend
