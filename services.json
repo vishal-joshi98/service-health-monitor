@@ -1,0 +1,8 @@
+[
+    {"Name":"Data Exchange Admin Service", "host":"127.0.0.1" ,"Port":9300,"type":"Port"},
+    {"Name":"Data Exchange Development", "host":"127.0.0.1" ,"Port":9288,"type":"Port"},
+    {"Name":"Data Exchange Runtime Server", "host":"127.0.0.1" ,"Port":9299,"type":"Port"},
+    {"Name":"MSSQL", "host":"127.0.0.1" ,"Port":1433,"type":"Port"},
+    {"Name":"Google", "host":"google.com" ,"Port":80,"type":"Port"},
+    {"Name":"IISADMIN","type":"WIN_SERV","host":"localhost", "Port":""}
+]

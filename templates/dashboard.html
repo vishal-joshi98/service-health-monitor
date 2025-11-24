@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Service Health Dashboard</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background: #f4f4f9; }
+        table { width: 90%; border-collapse: collapse; margin: auto; box-shadow: 0 3px 10px rgba(0,0,0,0.2); }
+        th, td { border: 1px solid #ddd; padding: 12px; text-align: center; }
+        th { background-color: #333; color: white; }
+        .up { background-color: #4CAF50; color: white; font-weight: bold; }
+        .down { background-color: #F44336; color: white; font-weight: bold; }
+        .warn { background-color: #FF9800; color: white; font-weight: bold; }
+        .timestamp { text-align: center; margin-bottom: 15px; color: #666; }
+    </style>
+
+    <!-- Auto-refresh every 5 minutes -->
+    <meta http-equiv="refresh" content="300">
+</head>
+
+<body>
+    <h2 style="text-align:center;">🚦 Service Health Dashboard</h2>
+
+    
+
+    <table>
+        <tr>
+            <th>Service</th>
+            <th>Host</th>
+            <th>Port</th>
+            <th>Type</th>
+            <th>Status</th>
+            <th>Response Time (ms)</th>
+        </tr>
+
+        {% for service in live %}
+        <tr>
+            <td>{{ service.Service }}</td>
+            <td>{{ service.Host }}</td>
+            <td>{{ service.Port }}</td>
+            <td>{{ service.Type }}</td>
+
+            <td class="{% if service.Status == 'Up' %}
+                        up
+                        {% elif service.Status == 'Down' %}
+                        down
+                        {% else %}
+                        warn
+                        {% endif %}">
+                {{ service.Status }}
+            </td>
+
+            <td>{{ service.Response_time }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+<br><br>
+<br><br>
+<h3 style="text-align:center;">📉 Down Events (Last 7 Days)</h3>
+
+<div style="width:90%; margin:auto; background:white; padding:15px; border-radius:10px; box-shadow:0 3px 10px rgba(0,0,0,0.2);">
+    <canvas id="downChart" style="height:300px;"></canvas>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    const labels = {{ chart_labels | tojson }};
+    const values = {{ chart_values | tojson }};
+    const services = {{ chart_services | tojson }};
+
+    new Chart(document.getElementById('downChart'), {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: "Down Events",
+                data: values,
+                backgroundColor: "#F44336",
+                borderRadius: 6
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            const index = context.dataIndex;
+                            const svcList = services[index];
+
+                            if (svcList.length === 0) {
+                                return "No Down Events";
+                            }
+
+                            let text = "Down Services:";
+                            svcList.forEach(s => {
+                                text += `\n- ${s}`;
+                            });
+
+                            return text;
+                        }
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: { precision: 0 }
+                }
+            }
+        }
+    });
+</script>
+
+
+
+</body>
+</html>
+   
