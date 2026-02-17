@@ -2,7 +2,7 @@ import pyodbc
 from datetime import datetime
 
 # --------------- Connection String -----------------
-conn_str = ( "DRIVER={ODBC Driver 17 for SQL Server};" "SERVER=192.168.0.8,1433;" "DATABASE=ServiceHealthDB;" "UID=sa;" "PWD=Password@123;" )
+conn_str = ( "DRIVER={ODBC Driver 17 for SQL Server};" "SERVER=db,1433;" "DATABASE=ServiceHealthDB;" "UID=sa;" "PWD=Password@123;" )
 
 
 def get_db_connection():
@@ -12,7 +12,7 @@ def get_db_connection():
 def init_db():
     # Step 1: Connect to master DB and create ServiceHealthDB if missing
     conn_master = pyodbc.connect(
-        "DRIVER={ODBC Driver 17 for SQL Server};SERVER=192.168.0.8,1433;DATABASE=ServiceHealthDB;UID=sa;PWD=Password@123;"
+        "DRIVER={ODBC Driver 17 for SQL Server};SERVER=db,1433;DATABASE=ServiceHealthDB;UID=sa;PWD=Password@123;"
     )
     cursor_master = conn_master.cursor()
 
