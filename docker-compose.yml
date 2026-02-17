@@ -11,7 +11,7 @@ services:
       - "1433:1433"
     volumes:
       - db_data:/var/opt/mssql
-  
+
   app:
     build: .
     container_name: flask_app
