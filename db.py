@@ -1,19 +1,38 @@
 import pyodbc
 from datetime import datetime
+import os
+
 
 # --------------- Connection String -----------------
-conn_str = ( "DRIVER={ODBC Driver 17 for SQL Server};" "SERVER=db,1433;" "DATABASE=ServiceHealthDB;" "UID=sa;" "PWD=Password@123;" )
+DB_SERVER = os.getenv("DB_SERVER")
+DB_NAME = os.getenv("DB_NAME")
+DB_USER = os.getenv("DB_USER")
+DB_PASSWORD = os.getenv("DB_PASSWORD")
 
+conn_str = (
+    f"DRIVER={{ODBC Driver 18 for SQL Server}};"
+    f"SERVER={DB_SERVER},1433;"
+    f"DATABASE={DB_NAME};"
+    f"UID={DB_USER};"
+    f"PWD={DB_PASSWORD};"
+)
 
 def get_db_connection():
     return pyodbc.connect(conn_str)
 
 #--------------- Database and Table Creation -----------------
 def init_db():
-    # Step 1: Connect to master DB and create ServiceHealthDB if missing
-    conn_master = pyodbc.connect(
-        "DRIVER={ODBC Driver 17 for SQL Server};SERVER=db,1433;DATABASE=ServiceHealthDB;UID=sa;PWD=Password@123;"
+
+    # Step 1: Connect to master database
+    master_conn_str = (
+        f"DRIVER={{ODBC Driver 18 for SQL Server}};"
+        f"SERVER={DB_SERVER},1433;"
+        f"DATABASE=master;"
+        f"UID={DB_USER};"
+        f"PWD={DB_PASSWORD};"
     )
+
+    conn_master = pyodbc.connect(master_conn_str)
     cursor_master = conn_master.cursor()
 
     cursor_master.execute("""
@@ -25,7 +44,7 @@ def init_db():
     cursor_master.close()
     conn_master.close()
 
-    # Step 2: Create table inside ServiceHealthDB
+    # Step 2: Connect to actual DB
     conn = get_db_connection()
     cursor = conn.cursor()
 

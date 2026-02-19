@@ -20,6 +20,11 @@ services:
     depends_on:
       - db
     restart: always
+    environment:
+      - DB_SERVER=db
+      - DB_NAME=ServiceHealthDB
+      - DB_USER=sa
+      - DB_PASSWORD=Password@123
 
 volumes:
   db_data:
