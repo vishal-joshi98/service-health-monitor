@@ -15,6 +15,9 @@ conn_str = (
     f"DATABASE={DB_NAME};"
     f"UID={DB_USER};"
     f"PWD={DB_PASSWORD};"
+    "Encrypt=yes;"
+    "TrustServerCertificate=yes;"
+
 )
 
 def get_db_connection():
@@ -30,9 +33,12 @@ def init_db():
         f"DATABASE=master;"
         f"UID={DB_USER};"
         f"PWD={DB_PASSWORD};"
+        "Encrypt=yes;"
+        "TrustServerCertificate=yes;"
+
     )
 
-    conn_master = pyodbc.connect(master_conn_str)
+    conn_master = pyodbc.connect(master_conn_str,autocommit=True)
     cursor_master = conn_master.cursor()
 
     cursor_master.execute("""

@@ -2,26 +2,25 @@ FROM python:3.11-slim
 
 WORKDIR /app
 
-# install system dependencies
+# Install dependencies and Microsoft ODBC Driver 18 (Debian 12 compatible)
 RUN apt-get update && apt-get install -y \
-    curl gnupg2 unixodbc-dev gcc g++ \
-    && curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - \
-    && curl https://packages.microsoft.com/config/debian/11/prod.list \
+    curl gnupg2 unixodbc-dev gcc g++ apt-transport-https ca-certificates \
+    && mkdir -p /etc/apt/keyrings \
+    && curl -fsSL https://packages.microsoft.com/keys/microsoft.asc \
+       | gpg --dearmor -o /etc/apt/keyrings/microsoft.gpg \
+    && echo "deb [arch=amd64 signed-by=/etc/apt/keyrings/microsoft.gpg] https://packages.microsoft.com/debian/12/prod bookworm main" \
        > /etc/apt/sources.list.d/mssql-release.list \
     && apt-get update \
-    && ACCEPT_EULA=Y apt-get install -y msodbcsql17 \
-    && apt-get clean
+    && ACCEPT_EULA=Y apt-get install -y msodbcsql18 \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
-# Copy requirements first (better Docker caching)
 COPY requirements.txt .
 
-# Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy rest of the application code
 COPY . .
 
-# Expose the port the app runs on
 EXPOSE 5000
 
 CMD ["python", "app.py"]
